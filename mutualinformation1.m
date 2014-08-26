@@ -3,7 +3,7 @@ function I = mutualinformation1(x,y)
 %
 %  I = mutualinformation1(x,y)
 %
-%  I : mutual information
+%  I : mutual information (bits)
 %  x,y : input signals
 %  
 %
@@ -20,8 +20,4 @@ bwy = 2*iqr(y)/length(y)^(1/3);
 nby = ceil((max(y) - min(y))/bwy);
 
 % Calculate mutual information
-if ( size(x,2) > 1 )            % may be needed if there is more than one predictor
-    I = jointentropy1(x(:,1),x(:,2),[nbx nbx]) + entropy1(y,bwy) - jointentropy1(x,y,[nbx nby]);
-else
-    I = entropy1(x,nbx) + entropy1(y,nby) - jointentropy1(x,y,[nbx nby]);
-end
+I = entropy1(x,nbx) + entropy1(y,nby) - jointentropy1(x,y,[nbx nby]);
