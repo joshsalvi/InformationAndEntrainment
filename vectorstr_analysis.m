@@ -35,7 +35,7 @@ for p = 1:numfreq
     y11 = y(1:length(xhilb),p);
     
     % Vector strength and Rayleigh test for nonuniformity
-    [VS(p,i,j), rayleightest_p(p,i,j)] = vscalc(x11,y11,1);        
+    [VS(p,i,j), rayleightest_p(p,i,j)] = vscalc2(x11,y11,1);        
     
     % Mutual information from displacement histograms
     MI_displ(p,i,j) = mutualinformation2(x11,y11);
@@ -77,7 +77,7 @@ for k = 1:100           % 1%-100% of signal
     y11 = y(1:length(xhilb),p);
     
     % Vector strength calculation
-    [VS_conv(k,p,i,j), rayleightest_p(k,p,i,j)] = vscalc(x11,y11,1);
+    [VS_conv(k,p,i,j), rayleightest_p(k,p,i,j)] = vscalc2(x11,y11,1);
     
 end
 end

@@ -1,4 +1,4 @@
-function I = mutualinformation3(x,y)
+function I = mutualinformation3(x,y,plotyn)
 % This function calculates the mutual information for two signals using
 % a 2D histogram of phase.
 %
@@ -6,6 +6,7 @@ function I = mutualinformation3(x,y)
 %
 %  I : mutual information (bits)
 %  x,y : input signals
+%  plotyn : plot the probability distributions? (1 = yes)
 %  
 %
 % I recommend using the Freedman-Diaconis rule for calculating the
@@ -46,5 +47,15 @@ Inh2(Inh2==inf | Inh2==-inf)=0;
 
 % Mutual information from the joint and marginal probabilities
 I = sum(sum(nh.*bsxfun(@minus,bsxfun(@minus,nhlog,Inh1),Inh2)));
+
+if plotyn == 1
+    figure;
+    imagesc(co{2},co{1},nh); title('Joint Probability');
+    xlabel('X');ylabel('Y');colorbar
+    
+    figure;
+    subplot(1,2,1);plot(co{2},sum(nh,1)); title('Marginal Probability (X)');
+    subplot(1,2,2);plot(co{1},sum(nh,2)); title('Marginal Probability (Y)');
+end
 
 end

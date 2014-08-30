@@ -1,4 +1,4 @@
-function [VS, rayleigh_p] = vscalc(x,y,rayleighyn)
+function [VS, rayleigh_p] = vscalc2(x,y,rayleighyn)
 % This function calculates the vector strength for two signals using
 % each function's analytic signal.
 %
