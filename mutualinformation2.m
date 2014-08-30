@@ -46,11 +46,11 @@ I = sum(sum(nh.*bsxfun(@minus,bsxfun(@minus,nhlog,Inh1),Inh2)));
 if plotyn == 1
     figure;
     imagesc(co{2},co{1},nh); title('Joint Probability');
-    xlabel('X');ylabel('Y');colorbar
+    xlabel('Y');ylabel('X');colorbar
     
     figure;
-    subplot(1,2,1);plot(co{2},sum(nh,1)); title('Marginal Probability (X)');
-    subplot(1,2,2);plot(co{1},sum(nh,2)); title('Marginal Probability (Y)');
+    subplot(1,2,1);plot(co{2},sum(nh,1)); title('Marginal Probability (Y)');
+    subplot(1,2,2);plot(co{1},sum(nh,2)); title('Marginal Probability (X)');
 end
 
 end
