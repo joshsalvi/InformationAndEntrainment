@@ -1,4 +1,4 @@
-function I = mutualinformation2(x,y,plotyn)
+function [I p] = mutualinformation2(x,y,plotyn)
 % This function calculates the mutual information for two signals using
 % a 2D histogram.
 %
@@ -7,6 +7,7 @@ function I = mutualinformation2(x,y,plotyn)
 %  I : mutual information (bits)
 %  x,y : input signals
 %  plotyn : plot the probability distributions? (1 = yes)
+%  p : p-value for the mutual information value calculated here
 %  
 %
 % I recommend using the Freedman-Diaconis rule for calculating the
@@ -42,6 +43,16 @@ Inh2(Inh2==inf | Inh2==-inf)=0;
 
 % Mutual information from the joint and marginal probabilities
 I = sum(sum(nh.*bsxfun(@minus,bsxfun(@minus,nhlog,Inh1),Inh2)));
+
+% Calculate the p value
+% Mutual information is equal to the G-test statistic divided by 2N where
+% N is the sample size. The G-test is also roughly equal to a chi-squared
+% distribution. 
+% http://en.wikipedia.org/wiki/Mutual_information
+% http://www.biostathandbook.com/chigof.html#chivsg
+df = (nbx-1)*(nby-1);
+Gstat = I*2*nbx*nby;
+p = gammainc(Gstat/2,df/2,'upper');     % p-value
 
 if plotyn == 1
     figure;

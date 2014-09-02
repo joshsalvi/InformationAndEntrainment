@@ -38,7 +38,7 @@ for p = 1:numfreq
     [VS(p,i,j), rayleightest_p(p,i,j)] = vscalc2(x11,y11,1);        
     
     % Mutual information from displacement histograms
-    [MI_displ(p,i,j) MI_pvalue(p,i,j)] = mutualinformation2(x11,y11,0);
+    MI_displ(p,i,j) = mutualinformation2(x11,y11,0);
     
     % Mutual information from phase
     MI_phase(p,i,j) = mutualinformation3(x11,y11,0);  
