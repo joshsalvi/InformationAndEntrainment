@@ -43,6 +43,9 @@ for p = 1:numfreq
     % Mutual information from phase
     MI_phase(p,i,j) = mutualinformation3(x11,y11,0);  
     
+    % Mutual information from kernel density estimates
+    MI_kde(p,i,j) = mutualinformation4(x11,y11,0);
+    
     % Normalized mutual information
     selfMI(p,i,j) = mutualinformation2(y11,y11,0);
     MI_norm(p,i,j) = MI_displ(p,i,j)/selfMI(p,i,j);
@@ -80,7 +83,7 @@ for k = 1:100           % 1%-100% of signal
     
     % Step through window lengths
     x11 = stim_center(1:stim_time(p)*k/100,p,i,j);
-    y11 = y(1:length(xhilb),p);
+    y11 = y(1:length(x11),p);
     
     % Vector strength calculation
     [VS_conv(k,p,i,j), rayleightest_p(k,p,i,j)] = vscalc2(x11,y11,1);
@@ -118,10 +121,11 @@ for k = 1:100       % 1%-100% of signal
 
     % Step through window lengths
     x11 = stim_center(1:stim_time(p)*k/100,p,i,j);
-    y11 = y(1:length(xhilb),p);    
+    y11 = y(1:length(x11),p);    
     
     MI_displ_conv(k,p,i,j) = mutualinformation2(x11,y11,0);
     MI_phase_conv(k,p,i,j) = mutualinformation3(x11,y11,0);  
+    MI_kde_conv(k,p,i,j)   = mutualinformation4(x11,y11,0);  
     
 end
 end
