@@ -32,6 +32,11 @@ MI_kde_p(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 selfMI(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 MI_norm(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 
+for i = 1:length(freq)
+    [~,selfMI_kderapid_p(i),~,selfMI_kderapid(i)] = mutualinfostatkde(y(1:stim_time(i),i),y(1:stim_time(i),i),[],1e2,[]);
+end
+
+
 for j = 1:a
 for i = 1:(logdata.data(j+ramp_loc1-1,iter_loc))
 for p = 1:numfreq
@@ -49,18 +54,21 @@ for p = 1:numfreq
     %MI_phase(p,i,j) = mutualinformation3(x11,y11,0);  
     
     % Mutual information from kernel density estimates
-    [MI_kde(p,i,j), MI_kde_p_chi2(p,i,j)] = mutualinformation4(x11,y11,0);
-    [~, MI_kde_p(p,i,j)] = mutualinfostat(x11,y11,[],10,[]);
+    %[MI_kde(p,i,j), MI_kde_p_chi2(p,i,j)] = mutualinformation4(x11,y11,0);
+    %[~, MI_kde_p(p,i,j)] = mutualinfostat(x11,y11,[],10,[]);
     
     % Normalized mutual information
-    selfMI(p,i,j) = mutualinformation4(y11,y11,0);
-    MI_norm(p,i,j) = MI_kde(p,i,j)/selfMI(p,i,j);
+    %selfMI(p,i,j) = mutualinformation4(y11,y11,0);
+    %MI_norm(p,i,j) = MI_kde(p,i,j)/selfMI(p,i,j);
     %[~, MI_norm_p(p,i,j)] = mutualinfostatnorm(x11,y11,[],10,[]);
     
     % Use another method for mutual information
     %MI_mut(p,i,j) = mutualinfo(x11,y11);
     %[~,MI_mut_p(p,i,j)] = mutualinfostat(x11,y11,[],100,[]);
     
+    % Alternatively, one can solve for the MI using only one function
+    [~,MI_kderapid_p(p,i,j),~,MI_kderapid(p,i,j)] = mutualinfostatkde(x11,y11,[],1e2,[]);
+    MI_kderapid_norm(p,i,j) = MI_kderapid(p,i,j)/selfMI_kderapid(p);
 end
 end
 end
