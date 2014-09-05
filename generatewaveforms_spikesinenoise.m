@@ -11,7 +11,8 @@
 clear all; close all;
 
 Fs = 1e3;
-t = linspace(0,10,100*Fs);
+duration=10;
+t = linspace(0,duration,duration*Fs);
 noise = randn(1,length(t))*0.1;
 noisebrown = cumsum(noise);
 
@@ -27,7 +28,7 @@ y(:,5,5) = noisebrown;
 % Spiking
 timeStepS = 1/Fs;                  
 spikesPerS = 50;                  
-durationS = 1e2;                  
+durationS = duration;                  
 times = [0:timeStepS:durationS-timeStepS];
 spikes = zeros(1, length(times));
 for train = 1:1

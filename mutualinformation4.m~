@@ -35,10 +35,18 @@ dy = dy./sum(sum(dy));
 dylog = log2(dy);
 dylog(dylog==inf | dylog==-inf)=0;
 
+rangex = 1.1*min(x):(max(x)-min(x))/(1000-1):max(x)*1.1;
+rangey = 1.1*min(y):(max(y)-min(y))/(1000-1):max(y)*1.1;
+[dx meshx] = ksdensity(x,rangex);
+[dy meshy] = ksdensity(y,rangey);
+dx = dx./sum(dx);
+dy = dy./sum(dy);
+dxy = dy'*dx;
+
 % 2D kernel density estimate
 %[xy]=gkde2([x y]);
 %dxy = xy.pdf;
-[bwxy,dxy,meshxyx,meshxyy]=kde2d([x y],2^10);
+%[bwxy,dxy,meshxyx,meshxyy]=kde2d([x y],2^10);
 dxy=abs(dxy);
 dxy = dxy./sum(sum(dxy));
 dxylog = log2(dxy);

@@ -1,0 +1,15 @@
+function [MIfreq MIfreq_p] = mutualinfospec(y);
+% This function calculates the mutual information from a dataset, y, that
+% is organized into an MxN matrix, where M is the length of time and N is
+% the number of trials
+%
+% [MIfreq MIfreq_p] = mutualinfospec(y);
+%
+%
+
+sizeY = size(Y);
+
+Ymean = mean(y,2);
+
+for i = 1:sizeY(2)
+    yn(

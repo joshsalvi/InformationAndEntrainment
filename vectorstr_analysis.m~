@@ -26,6 +26,11 @@ end
 % Initialize variables
 VS(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 rayleightest_p(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
+MI_kde(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
+MI_kde_p_chi2(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
+MI_kde_p(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
+selfMI(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
+MI_norm(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 
 for j = 1:a
 for i = 1:(logdata.data(j+ramp_loc1-1,iter_loc))
@@ -38,14 +43,23 @@ for p = 1:numfreq
     [VS(p,i,j), rayleightest_p(p,i,j)] = vscalc2(x11,y11,1);        
     
     % Mutual information from displacement histograms
-    [MI_displ(p,i,j) MI_pvalue(p,i,j)] = mutualinformation2(x11,y11,0);
+    %[MI_displ(p,i,j) MI_displ_p(p,i,j)] = mutualinformation2(x11,y11,0);
     
     % Mutual information from phase
-    MI_phase(p,i,j) = mutualinformation3(x11,y11,0);  
+    %MI_phase(p,i,j) = mutualinformation3(x11,y11,0);  
+    
+    % Mutual information from kernel density estimates
+    [MI_kde(p,i,j), MI_kde_p_chi2(p,i,j)] = mutualinformation4(x11,y11,0);
+    [~, MI_kde_p(p,i,j)] = mutualinfostat(x11,y11,[],10,[]);
     
     % Normalized mutual information
-    selfMI(p,i,j) = mutualinformation2(y11,y11,0);
-    MI_norm(p,i,j) = MI_displ(p,i,j)/selfMI(p,i,j);
+    selfMI(p,i,j) = mutualinformation4(y11,y11,0);
+    MI_norm(p,i,j) = MI_kde(p,i,j)/selfMI(p,i,j);
+    %[~, MI_norm_p(p,i,j)] = mutualinfostatnorm(x11,y11,[],10,[]);
+    
+    % Use another method for mutual information
+    %MI_mut(p,i,j) = mutualinfo(x11,y11);
+    %[~,MI_mut_p(p,i,j)] = mutualinfostat(x11,y11,[],100,[]);
     
 end
 end
@@ -53,18 +67,30 @@ end
 
 % Find the averages
 averageyn = 1;
+% average all?
+averageallyn = 0;
+if averageallyn == 1;
+    avgind = 1:a;
+else
+    avgind = [1 2 3];
+end
+
 if averageyn ==1
 for j = 1:a
 for i = 1:(logdata.data(j+ramp_loc1-1,iter_loc))
 for p = 1:numfreq
-    VS_mean(p,i) = mean(VS(p,i,:));
-    VS_sem(p,i) = std(VS(p,i,:))/sqrt(a);
-    MI_displ_mean(p,i) = mean(MI_displ(p,i,:));
-    MI_displ_sem(p,i) = std(MI_displ(p,i,:))/sqrt(a);   
-    MI_phase_mean(p,i) = mean(MI_phase(p,i,:));
-    MI_phase_sem(p,i) = std(MI_phase(p,i,:))/sqrt(a);
-    MI_norm_mean(p,i) = mean(MI_norm(p,i,:));
-    MI_norm_sem(p,i) = std(MI_norm(p,i,:))/sqrt(a);
+    VS_mean(p,i) = mean(VS(p,i,avgind));
+    VS_sem(p,i) = std(VS(p,i,avgind))/sqrt(length(avgind));
+    %MI_displ_mean(p,i) = mean(MI_displ(p,i,avgind));
+    %MI_displ_sem(p,i) = std(MI_displ(p,i,avgind))/sqrt(length(avgind));   
+    %MI_phase_mean(p,i) = mean(MI_phase(p,i,avgind));
+    %MI_phase_sem(p,i) = std(MI_phase(p,i,avgind))/sqrt(length(avgind));
+    MI_norm_mean(p,i) = mean(MI_norm(p,i,avgind));
+    MI_norm_sem(p,i) = std(MI_norm(p,i,avgind))/sqrt(length(avgind));
+    %MI_mut_mean(p,i) = mean(MI_mut(p,i,avgind));
+    %MI_mut_sem(p,i) = std(MI_mut(p,i,avgind))/sqrt(length(avgind));
+    MI_kde_mean(p,i) = mean(MI_kde(p,i,avgind));
+    MI_kde_sem(p,i) = std(MI_kde(p,i,avgind))/sqrt(length(avgind));
 end
 end
 end
@@ -122,6 +148,7 @@ for k = 1:100       % 1%-100% of signal
     
     MI_displ_conv(k,p,i,j) = mutualinformation2(x11,y11,0);
     MI_phase_conv(k,p,i,j) = mutualinformation3(x11,y11,0);  
+    MI_kde_conv(k,p,i,j)   = mutualinformation4(x11,y11,0);  
     
 end
 end

@@ -24,6 +24,7 @@ if iscolumn(y) == 0
 end
 
 % Kernel density estimate
+%{
 [bwx,dx,meshx,cdfx]=kde1d(x,2^10);
 [bwy,dy,meshy,cdfy]=kde1d(y,2^10);
 dx = abs(dx);
@@ -34,6 +35,7 @@ dy = abs(dy);
 dy = dy./sum(sum(dy));
 dylog = log2(dy);
 dylog(dylog==inf | dylog==-inf)=0;
+%}
 
 % 2D kernel density estimate
 %[xy]=gkde2([x y]);
