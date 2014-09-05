@@ -40,14 +40,22 @@ if iscolumn(y) == 0
     y = y';
 end
 
-% Randomly shuffle the X and Y data and calculate MI
+% Randomly shuffle the X and Y data and calculate MI - create surrogates
+% Pethel et al, Entropy (2014) 16:2839-2849
 for i = 1:iter
-    %MIS(i) = mutualinformation4(Shuffle(x),Shuffle(y),0);
-    clear z x1 y1
+    
+    [fx wx ux vx] = trans_count(x,0);       % zeroth order markov model
+    [fy wy uy vy] = trans_count(y,0);
+    xn = whittle_surrogate(fx,wx,ux,vx);    % generate surrogates
+    yn = whittle_surrogate(fy,wy,uy,vy);
+    MIS(i) = mutualinformation4(xn,yn,0);
+    clear z fx fy wx wy ux uy vx vy xn yn
+    %{
     z = Shuffle(vertcat(x,y));
     x1 = z(1:length(z)/2);
     y1 = z(length(z)/2+1:length(z));
     MIS(i) = rapidmi(x1,y1);
+    %}
 end
 % Create a kernel density estimate 
 [a b] = ksdensity(MIS,0:max(MIS)/10000:max(MIS)*2);

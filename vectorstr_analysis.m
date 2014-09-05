@@ -54,7 +54,7 @@ for p = 1:numfreq
     %MI_phase(p,i,j) = mutualinformation3(x11,y11,0);  
     
     % Mutual information from kernel density estimates
-    %[MI_kde(p,i,j), MI_kde_p_chi2(p,i,j)] = mutualinformation4(x11,y11,0);
+    [MI_kde(p,i,j), MI_kde_p_chi2(p,i,j)] = mutualinformation4(x11,y11,0);
     %[~, MI_kde_p(p,i,j)] = mutualinfostat(x11,y11,[],10,[]);
     
     % Normalized mutual information
@@ -67,8 +67,8 @@ for p = 1:numfreq
     %[~,MI_mut_p(p,i,j)] = mutualinfostat(x11,y11,[],100,[]);
     
     % Alternatively, one can solve for the MI using only one function
-    [~,MI_kderapid_p(p,i,j),~,MI_kderapid(p,i,j)] = mutualinfostatkde(x11,y11,[],1e2,[]);
-    MI_kderapid_norm(p,i,j) = MI_kderapid(p,i,j)/selfMI_kderapid(p);
+    [~,MI_kderapid_p(p,i,j),~,MI_kderapid(p,i,j)] = mutualinfostatkde(x11,y11,[],1e3,[]);
+    %MI_kderapid_norm(p,i,j) = MI_kderapid(p,i,j)/selfMI_kderapid(p);
 end
 end
 end
