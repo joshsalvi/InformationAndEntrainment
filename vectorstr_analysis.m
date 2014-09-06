@@ -33,7 +33,8 @@ selfMI(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 MI_norm(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 
 for i = 1:length(freq)
-    [~,selfMI_kderapid_p(i),~,selfMI_kderapid(i)] = mutualinfostatkde(y(1:stim_time(i),i),y(1:stim_time(i),i),[],1e2,[]);
+    [~,selfMI_kdedispl_p(i),~,selfMI_kdedispl(i)] = mutualinfostatkde(y(1:stim_time(i),i),y(1:stim_time(i),i),[],10,[],2^10,1,2);
+    [~,selfMI_kdephase_p(i),~,selfMI_kdephase(i)] = mutualinfostatkdephase(y(1:stim_time(i),i),y(1:stim_time(i),i),[],10,[],2^10,1,2);
 end
 
 
@@ -54,7 +55,7 @@ for p = 1:numfreq
     %MI_phase(p,i,j) = mutualinformation3(x11,y11,0);  
     
     % Mutual information from kernel density estimates
-    [MI_kde(p,i,j), MI_kde_p_chi2(p,i,j)] = mutualinformation4(x11,y11,0);
+    %[MI_kde(p,i,j), MI_kde_p_chi2(p,i,j)] = mutualinformation4(x11,y11,0);
     %[~, MI_kde_p(p,i,j)] = mutualinfostat(x11,y11,[],10,[]);
     
     % Normalized mutual information
@@ -67,7 +68,8 @@ for p = 1:numfreq
     %[~,MI_mut_p(p,i,j)] = mutualinfostat(x11,y11,[],100,[]);
     
     % Alternatively, one can solve for the MI using only one function
-    [~,MI_kderapid_p(p,i,j),~,MI_kderapid(p,i,j)] = mutualinfostatkde(x11,y11,[],1e3,[]);
+    [~,MI_kdedispl_p(p,i,j),~,MI_kdedispl(p,i,j)] = mutualinfostatkde(x11,y11,[],10,[],2^10,1,2);
+    [~,MI_kdephase_p(p,i,j),~,MI_kdephase(p,i,j)] = mutualinfostatkdephase(x11,y11,[],10,[],2^10,1,2);
     %MI_kderapid_norm(p,i,j) = MI_kderapid(p,i,j)/selfMI_kderapid(p);
 end
 end
@@ -87,18 +89,22 @@ if averageyn ==1
 for j = 1:a
 for i = 1:(logdata.data(j+ramp_loc1-1,iter_loc))
 for p = 1:numfreq
-    VS_mean(p,i) = mean(VS(p,i,avgind));
-    VS_sem(p,i) = std(VS(p,i,avgind))/sqrt(length(avgind));
+    %VS_mean(p,i) = mean(VS(p,i,avgind));
+    %VS_sem(p,i) = std(VS(p,i,avgind))/sqrt(length(avgind));
     %MI_displ_mean(p,i) = mean(MI_displ(p,i,avgind));
     %MI_displ_sem(p,i) = std(MI_displ(p,i,avgind))/sqrt(length(avgind));   
     %MI_phase_mean(p,i) = mean(MI_phase(p,i,avgind));
     %MI_phase_sem(p,i) = std(MI_phase(p,i,avgind))/sqrt(length(avgind));
-    MI_norm_mean(p,i) = mean(MI_norm(p,i,avgind));
-    MI_norm_sem(p,i) = std(MI_norm(p,i,avgind))/sqrt(length(avgind));
+    %MI_norm_mean(p,i) = mean(MI_norm(p,i,avgind));
+    %MI_norm_sem(p,i) = std(MI_norm(p,i,avgind))/sqrt(length(avgind));
     %MI_mut_mean(p,i) = mean(MI_mut(p,i,avgind));
     %MI_mut_sem(p,i) = std(MI_mut(p,i,avgind))/sqrt(length(avgind));
-    MI_kde_mean(p,i) = mean(MI_kde(p,i,avgind));
-    MI_kde_sem(p,i) = std(MI_kde(p,i,avgind))/sqrt(length(avgind));
+    %MI_kde_mean(p,i) = mean(MI_kde(p,i,avgind));
+    %MI_kde_sem(p,i) = std(MI_kde(p,i,avgind))/sqrt(length(avgind));
+    MI_kdedispl_mean(p,i) = mean(MI_kdedispl(p,i,avgind));
+    MI_kdedispl_sem(p,i) = std(MI_kdedispl(p,i,avgind))/sqrt(length(avgind));
+    MI_kdephase_mean(p,i) = mean(MI_kdephase(p,i,avgind));
+    MI_kdephase_sem(p,i) = std(MI_kdephase(p,i,avgind))/sqrt(length(avgind));
 end
 end
 end

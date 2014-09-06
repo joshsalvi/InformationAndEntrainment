@@ -1,4 +1,4 @@
-function [I p] = mutualinformation4(x,y,plotyn)
+function [I p] = mutualinformation4(x,y,bins)
 % This function calculates the mutual information for two signals using
 % a kernel density estimator.
 %
@@ -6,7 +6,7 @@ function [I p] = mutualinformation4(x,y,plotyn)
 %
 %  I : mutual information (bits)
 %  x,y : input signals
-%  plotyn : plot the probability distributions? (1 = yes)
+%  bins : how many bins would you like to use? (default = 2^4)
 %  p : p-value for the mutual information value calculated here
 %  
 %
@@ -21,6 +21,10 @@ if iscolumn(x) == 0
 end
 if iscolumn(y) == 0
     y = y';
+end
+
+if isempty(bins) == 1
+    bins = 2^4;
 end
 
 % Kernel density estimate
@@ -40,7 +44,7 @@ dylog(dylog==inf | dylog==-inf)=0;
 % 2D kernel density estimate
 %[xy]=gkde2([x y]);
 %dxy = xy.pdf;
-[bwxy,dxy,meshxyx,meshxyy]=kde2d([x y],2^10);
+[bwxy,dxy,meshxyx,meshxyy]=kde2d([x y],bins);
 dxy=abs(dxy);
 dxy = dxy./sum(sum(dxy));
 dxylog = log2(dxy);
@@ -65,14 +69,5 @@ df = (length(meshxyx)-1)*(length(meshxyy)-1);
 Gstat = I*2*length(meshxyx)*length(meshxyy);
 p = gammainc(Gstat/2,df/2,'upper');     % p-value
 
-if plotyn == 1
-    figure;
-    imagesc(meshx(1,:),meshy(:,1),dxy); title('Joint Probability');
-    xlabel('Y');ylabel('X');colorbar
-    
-    figure;
-    subplot(1,2,1);plot(meshx,sum(dx,2)); title('Marginal Probability (Y)');
-    subplot(1,2,2);plot(meshy,sum(dy,2)); title('Marginal Probability (X)');
-end
 
 end

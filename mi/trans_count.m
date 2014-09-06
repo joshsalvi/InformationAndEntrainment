@@ -58,7 +58,7 @@ else
     [~, st] = ismember(d(1:L-1)',rw,'rows');
     [~, ed] = ismember(d(end-L+2:end)',rw,'rows');
 end
-indx = (1:size(rwL,1));
+indx = (1:size(rw,1));
 e1 = zeros(size(rwL,1),1);
 e2 = zeros(size(rwL,1),1);
 % Store the transistion table as a sparse matrix

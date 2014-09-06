@@ -52,7 +52,7 @@ pvalue = zeros(K+1,1);
 scount = zeros(K+1,1);
 % Zeroth Markov order test using simple permutation
 scount(1) = stirl(n)/log(10);
-[0 h0 scount(1)]
+[0 h0 scount(1)];
 parfor i=1:N
     indx = randperm(n);
     seq = r(indx);
@@ -61,24 +61,24 @@ parfor i=1:N
 end
 pval = sum(s0 <= h0)/N;
 pvalue(1) = pval;
-gs = subplot(K+1,1,1);
-hist(s0,20)
-hs = findobj(gs,'Type','patch');
-set(hs,'FaceColor','w','EdgeColor','k')
-yl = get(gs,'ylim');
-text(h0,yl(2),[' p = ',num2str(pval,3)],'VerticalAlignment','top','FontSize',12)
-hold on
-plot([h0 h0],[yl(1) yl(2)],'k','linewidth',3)
-hold off
+%gs = subplot(K+1,1,1);
+%hist(s0,20)
+%hs = findobj(gs,'Type','patch');
+%set(hs,'FaceColor','w','EdgeColor','k')
+%yl = get(gs,'ylim');
+%text(h0,yl(2),[' p = ',num2str(pval,3)],'VerticalAlignment','top','FontSize',12)
+%hold on
+%plot([h0 h0],[yl(1) yl(2)],'k','linewidth',3)
+%hold off
 
 % Do orders 1 through K using Whittle surrogates
 for k = 1:K
     t = embed(r,k+2);
     h0 = block_entropy(t);
-    [matx rw st ed] = trans_count(r,k);
+    [matx, rw, st, ed] = trans_count(r,k);
     num = whittle_number(matx,st,ed);
     scount(k+1) = num/log(10);
-    [k h0 num/log(10)]
+    [k h0 num/log(10)];
     h1 = zeros(N,1);
     parfor i=1:N
         seq = whittle_surrogate(matx,rw,st,ed);
@@ -87,15 +87,15 @@ for k = 1:K
     end
     pval = sum(h1 <= h0)/N;
     pvalue(k+1) = pval;
-    gs = subplot(K+1,1,k+1);
-    hist(h1,20)
-    hs = findobj(gs,'Type','patch');
-    set(hs,'FaceColor','w','EdgeColor','k')
-    yl = get(gs,'ylim');
-    text(h0,yl(2),[' p = ',num2str(pval,3)],'VerticalAlignment','top','FontSize',12)
-    hold on
-    plot([h0 h0],[yl(1) yl(2)],'k','linewidth',3)
-    hold off
+    %gs = subplot(K+1,1,k+1);
+    %hist(h1,20)
+    %hs = findobj(gs,'Type','patch');
+    %set(hs,'FaceColor','w','EdgeColor','k')
+    %yl = get(gs,'ylim');
+    %text(h0,yl(2),[' p = ',num2str(pval,3)],'VerticalAlignment','top','FontSize',12)
+    %hold on
+    %plot([h0 h0],[yl(1) yl(2)],'k','linewidth',3)
+    %hold off
 end
 
 function s = stirl(x)
@@ -136,7 +136,7 @@ if ~isempty(varargin)
     end
 end
 
-function [y c] = unique_count(x)
+function [y, c] = unique_count(x)
 % Unique_count sorts and counts the rows of x
 % y lists the unique rows and c their counts
 if size(x,1) == 1;

@@ -38,7 +38,7 @@ function seq = whittle_surrogate(f,w,u,v)
 N = size(f,1);
 sym = (1:N);
 if size(f,2)==1 %if f is not a matrix then use random permutation
-    indx = randperm(sum(f));
+    indx = randperm(sum(length(f)));
     seq = w(indx);
     return
 end

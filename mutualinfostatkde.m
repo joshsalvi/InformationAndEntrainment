@@ -4,19 +4,23 @@ function [h p MIS I] = mutualinfostatkde(x,y,varargin)
 % times to calculate a probability distribution, and it then calculates a
 % p-value based upon the input mutual information.
 %
-% [h p] = mutualinfostat(x,y,I,iter,alpha)
+% [h p] = mutualinfostat(x,y,I,iter,alpha,bins,markovreps,maxorder)
 %
 %       I : mutual information input (if empty, will calculate it for you)
 %       x : data set 1 (Mx1)
 %       y : data set 2 (Mx1)
 %       iter : number of iterations (default = 1E4)
 %       alpha : alpha level for the statistical test (default=0.05)
+%       bins : number of bins for meshgrid
+%       markovreps : number of times to repeat the Markov process (default
+%       = 100)
+%       maxorder : maximum Markov order to be used (default = 2)
 %       h : reject or accept the null hypothesis that the mutual
 %       information comes from a random distribution as calculated here (1
 %       = reject at alpha level, 0 = do not reject)
 %       p : p-value associated with the statistical test
 %
-% [h p] = mutualinfostat(x,y,[],[],[]);
+% [h p] = mutualinfostat(x,y,[],[],[],[],[]);
 %
 %
 %   Joshua D. Salvi
@@ -32,6 +36,21 @@ if isempty(varargin{3})
 else
     alpha = varargin{3};
 end
+if isempty(varargin{4})
+    bins = 2^4;
+else
+    bins = varargin{4};
+end
+if isempty(varargin{5})
+    markovreps = 100;
+else
+    markovreps = varargin{5};
+end
+if isempty(varargin{6})
+    maxorder = 2;
+else
+    maxorder = varargin{6};
+end
 
 if iscolumn(x) == 0
     x = x';
@@ -42,27 +61,40 @@ end
 
 % Randomly shuffle the X and Y data and calculate MI - create surrogates
 % Pethel et al, Entropy (2014) 16:2839-2849
+% Determine the order of your Markov model, up to order 2
+x=x(1:5:end);y=y(1:5:end);              % Downsample by a factor of scan rate / filter freq (10 kHz / 2 kHz)
+[px] = MarkovOrderTests(x,markovreps,maxorder);     % determine markov order
+[py] = MarkovOrderTests(y,markovreps,maxorder);
+rx=find(px>0.05);ry=find(py>0.05);
+if isempty(rx) == 1     % if maximum markov order is not large enough, set to the next highest order
+    rx = maxorder+2;
+end
+if isempty(ry) == 1
+    ry = maxorder+2;
+end
+rx=rx(1);ry=ry(1);    % select the smallest Markov order that was found from the above algorithm
+
+[fx, wx, ux, vx] = trans_count(x,rx-1);       % Nth order markov model
+[fy, wy, uy, vy] = trans_count(y,ry-1);
+
 for i = 1:iter
-    
-    [fx wx ux vx] = trans_count(x,0);       % zeroth order markov model
-    [fy wy uy vy] = trans_count(y,0);
+    clear z xn yn
     xn = whittle_surrogate(fx,wx,ux,vx);    % generate surrogates
     yn = whittle_surrogate(fy,wy,uy,vy);
-    MIS(i) = mutualinformation4(xn,yn,0);
-    clear z fx fy wx wy ux uy vx vy xn yn
-    %{
-    z = Shuffle(vertcat(x,y));
-    x1 = z(1:length(z)/2);
-    y1 = z(length(z)/2+1:length(z));
-    MIS(i) = rapidmi(x1,y1);
-    %}
+    if length(xn) > length(yn)
+        MIS(i) = rapidmi(xn(1:length(yn)),yn,bins);
+    elseif length(xn) <= length(yn)
+        MIS(i) = rapidmi(xn,yn(1:length(xn)),bins);
+    end
 end
+
+minlength=min([length(xn),length(yn)]);
 % Create a kernel density estimate 
-[a b] = ksdensity(MIS,0:max(MIS)/10000:max(MIS)*2);
+[a, b] = ksdensity(MIS,0:max(MIS)/10000:max(MIS)*2);
 a=a./sum(a);
 % Calculate mutual information if not an input
 if isempty(varargin{1})
-    I = rapidmi(x,y);
+    I = rapidmi(x,y,bins);
 else
     I = varargin{1};
 end
@@ -80,7 +112,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function Ir = rapidmi(m,n)
+function Ir = rapidmi(m,n,bins)
 
 if iscolumn(m) == 0
     m = m';
@@ -89,7 +121,7 @@ if iscolumn(n) == 0
     n = n';
 end
 
-[bwmn,dmn,meshmnm,meshmnn]=kde2d([m n],2^5);
+[bwmn,dmn,meshmnm,meshmnn]=kde2d([m n],bins);
 dmn=abs(dmn);dmn = dmn./sum(sum(dmn));dmnlog = log2(dmn);
 dmnlog(dmnlog==inf | dmnlog==-inf)=0;
 
