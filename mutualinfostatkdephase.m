@@ -51,6 +51,12 @@ if isempty(varargin{6})
 else
     maxorder = varargin{6};
 end
+if isempty(varargin{7})
+    downsample = 5;
+else
+    downsample = varargin{7};
+end
+
 
 if iscolumn(x) == 0
     x = x';
@@ -63,7 +69,7 @@ end
 % Randomly shuffle the X and Y data and calculate MI - create surrogates
 % Pethel et al, Entropy (2014) 16:2839-2849
 % Determine the order of your Markov model, up to order 2
-x=x(1:5:end);y=y(1:5:end);              % Downsample by a factor of scan rate / filter freq (10 kHz / 2 kHz)
+x=x(1:downsample:end);y=y(1:downsample:end);              % Downsample by a factor of scan rate / filter freq (10 kHz / 2 kHz)
 
 xh = hilbert(x);                                     % find analytic signal
 xph = atan2(imag(xh),real(xh));                      % instantaneous phase

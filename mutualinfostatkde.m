@@ -4,7 +4,7 @@ function [h p MIS I] = mutualinfostatkde(x,y,varargin)
 % times to calculate a probability distribution, and it then calculates a
 % p-value based upon the input mutual information.
 %
-% [h p] = mutualinfostat(x,y,I,iter,alpha,bins,markovreps,maxorder)
+% [h p] = mutualinfostat(x,y,I,iter,alpha,bins,markovreps,maxorder,downsample)
 %
 %       I : mutual information input (if empty, will calculate it for you)
 %       x : data set 1 (Mx1)
@@ -14,6 +14,7 @@ function [h p MIS I] = mutualinfostatkde(x,y,varargin)
 %       bins : number of bins for meshgrid
 %       markovreps : number of times to repeat the Markov process (default
 %       = 100)
+%       downsample : how much oversampling?  (e.g. Fs/nyquist) (default=5)
 %       maxorder : maximum Markov order to be used (default = 2)
 %       h : reject or accept the null hypothesis that the mutual
 %       information comes from a random distribution as calculated here (1
@@ -51,6 +52,11 @@ if isempty(varargin{6})
 else
     maxorder = varargin{6};
 end
+if isempty(varargin{7})
+    downsample = 5;
+else
+    downsample = varargin{7};
+end
 
 if iscolumn(x) == 0
     x = x';
@@ -62,7 +68,7 @@ end
 % Randomly shuffle the X and Y data and calculate MI - create surrogates
 % Pethel et al, Entropy (2014) 16:2839-2849
 % Determine the order of your Markov model, up to order 2
-x=x(1:5:end);y=y(1:5:end);              % Downsample by a factor of scan rate / filter freq (10 kHz / 2 kHz)
+x=x(1:downsample:end);y=y(1:downsample:end);              % Downsample 
 [px] = MarkovOrderTests(x,markovreps,maxorder);     % determine markov order
 [py] = MarkovOrderTests(y,markovreps,maxorder);
 rx=find(px>0.05);ry=find(py>0.05);

@@ -31,10 +31,16 @@ MI_kde_p_chi2(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 MI_kde_p(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 selfMI(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 MI_norm(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
+MI_kdedispl_p(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
+MI_kdedispl(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
+MI_kdephase(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
+MI_kdephase_p(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
+
+dwnspl = 200;            % downsampling factor: ensure it is still greater than the Nyquist
 
 for i = 1:length(freq)
-    [~,selfMI_kdedispl_p(i),~,selfMI_kdedispl(i)] = mutualinfostatkde(y(1:stim_time(i),i),y(1:stim_time(i),i),[],10,[],2^10,1,2);
-    [~,selfMI_kdephase_p(i),~,selfMI_kdephase(i)] = mutualinfostatkdephase(y(1:stim_time(i),i),y(1:stim_time(i),i),[],10,[],2^10,1,2);
+    [~,selfMI_kdedispl_p(i),~,selfMI_kdedispl(i)] = mutualinfostatkde(y(1:stim_time(i),i),y(1:stim_time(i),i),[],10,[],2^10,1,2,dwnspl);
+    [~,selfMI_kdephase_p(i),~,selfMI_kdephase(i)] = mutualinfostatkdephase(y(1:stim_time(i),i),y(1:stim_time(i),i),[],10,[],2^10,1,2,dwnspl);
 end
 
 
@@ -68,8 +74,8 @@ for p = 1:numfreq
     %[~,MI_mut_p(p,i,j)] = mutualinfostat(x11,y11,[],100,[]);
     
     % Alternatively, one can solve for the MI using only one function
-    [~,MI_kdedispl_p(p,i,j),~,MI_kdedispl(p,i,j)] = mutualinfostatkde(x11,y11,[],10,[],2^10,1,2);
-    [~,MI_kdephase_p(p,i,j),~,MI_kdephase(p,i,j)] = mutualinfostatkdephase(x11,y11,[],10,[],2^10,1,2);
+    [~,MI_kdedispl_p(p,i,j),~,MI_kdedispl(p,i,j)] = mutualinfostatkde(x11,y11,[],10,[],2^10,1,2,dwnspl);
+    [~,MI_kdephase_p(p,i,j),~,MI_kdephase(p,i,j)] = mutualinfostatkdephase(x11,y11,[],10,[],2^10,1,2,dwnspl);
     %MI_kderapid_norm(p,i,j) = MI_kderapid(p,i,j)/selfMI_kderapid(p);
 end
 end
