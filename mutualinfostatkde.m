@@ -68,7 +68,7 @@ end
 % Randomly shuffle the X and Y data and calculate MI - create surrogates
 % Pethel et al, Entropy (2014) 16:2839-2849
 % Determine the order of your Markov model, up to order 2
-x=x(1:downsample:end);y=y(1:downsample:end);              % Downsample 
+x=x(round(1:downsample:end));y=y(round(1:downsample:end));              % Downsample 
 [px] = MarkovOrderTests(x,markovreps,maxorder);     % determine markov order
 [py] = MarkovOrderTests(y,markovreps,maxorder);
 rx=find(px>0.05);ry=find(py>0.05);
@@ -96,7 +96,7 @@ end
 
 minlength=min([length(xn),length(yn)]);
 % Create a kernel density estimate 
-[a, b] = ksdensity(MIS,0:max(MIS)/10000:max(MIS)*2);
+[a, b] = ksdensity(MIS,round(0:max(MIS)/10000:max(MIS)*2));
 a=a./sum(a);
 % Calculate mutual information if not an input
 if isempty(varargin{1})

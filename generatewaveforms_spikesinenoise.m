@@ -27,7 +27,7 @@ y(:,5,5) = noisebrown;
 
 % Spiking
 timeStepS = 1/Fs;                  
-spikesPerS = 50;                  
+spikesPerS = 10;                  
 durationS = duration;                  
 times = [0:timeStepS:durationS-timeStepS];
 spikes = zeros(1, length(times));

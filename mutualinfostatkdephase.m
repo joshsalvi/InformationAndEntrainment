@@ -69,7 +69,7 @@ end
 % Randomly shuffle the X and Y data and calculate MI - create surrogates
 % Pethel et al, Entropy (2014) 16:2839-2849
 % Determine the order of your Markov model, up to order 2
-x=x(1:downsample:end);y=y(1:downsample:end);              % Downsample by a factor of scan rate / filter freq (10 kHz / 2 kHz)
+x=x(round(1:downsample:end));y=y(round(1:downsample:end));              % Downsample by a factor of scan rate / filter freq (10 kHz / 2 kHz)
 
 xh = hilbert(x);                                     % find analytic signal
 xph = atan2(imag(xh),real(xh));                      % instantaneous phase
@@ -109,7 +109,7 @@ end
 
 minlength=min([length(xnph),length(ynph)]);
 % Create a kernel density estimate 
-[a, b] = ksdensity(MIS,0:max(MIS)/10000:max(MIS)*2);
+[a, b] = ksdensity(MIS,round(0:max(MIS)/10000:max(MIS)*2));
 a=a./sum(a);
 % Calculate mutual information if not an input
 if isempty(varargin{1})

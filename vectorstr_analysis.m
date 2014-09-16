@@ -36,13 +36,13 @@ MI_kdedispl(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 MI_kdephase(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 MI_kdephase_p(numfreq,(logdata.data(j+ramp_loc1-1,iter_loc)),a) = 0;
 
-dwnspl = 200;            % downsampling factor: ensure it is still greater than the Nyquist
-
+dwnspl = 100;            % downsampling factor: ensure it is still greater than the Nyquist
+%{
 for i = 1:length(freq)
     [~,selfMI_kdedispl_p(i),~,selfMI_kdedispl(i)] = mutualinfostatkde(y(1:stim_time(i),i),y(1:stim_time(i),i),[],10,[],2^10,1,2,dwnspl);
     [~,selfMI_kdephase_p(i),~,selfMI_kdephase(i)] = mutualinfostatkdephase(y(1:stim_time(i),i),y(1:stim_time(i),i),[],10,[],2^10,1,2,dwnspl);
 end
-
+%}
 
 for j = 1:a
 for i = 1:(logdata.data(j+ramp_loc1-1,iter_loc))
