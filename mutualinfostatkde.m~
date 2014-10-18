@@ -4,7 +4,7 @@ function [h p MIS I] = mutualinfostatkde(x,y,varargin)
 % times to calculate a probability distribution, and it then calculates a
 % p-value based upon the input mutual information.
 %
-% [h p] = mutualinfostatkde(x,y,I,iter,alpha,bins,markovreps,maxorder,downsample)
+% [h p] = mutualinfostat(x,y,I,iter,alpha,bins,markovreps,maxorder,downsample)
 %
 %       I : mutual information input (if empty, will calculate it for you)
 %       x : data set 1 (Mx1)
