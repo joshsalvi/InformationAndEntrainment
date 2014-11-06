@@ -80,7 +80,7 @@ global N A2 I
 if nargin<2
     n=2^8;
 end
-n=2^ceil(log2(n)); % round up n to the next power of 2;
+n=2.^ceil(log2(n)); % round up n to the next power of 2;
 N=size(data,1);
 if nargin<3
     MAX=max(data,[],1); MIN=min(data,[],1); Range=MAX-MIN;
