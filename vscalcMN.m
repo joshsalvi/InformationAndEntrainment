@@ -1,8 +1,8 @@
-function [VS, rayleigh_z, rayleigh_p, rayleigh_h] = vscalc2(varargin)
+function [VS, rayleigh_z, rayleigh_p, rayleigh_h] = vscalcMN(varargin)
 % This function calculates the vector strength for two signals using
-% each function's analytic signal.
+% each function's analytic signal for different m:n ratios of phase locking.
 %
-%  [VS, rayleigh_p, rayleigh_stat] = vscalc2(x,y,rayleighyn,alphalevel)
+%  [VS, rayleigh_z, rayleigh_p, rayleigh_h] = vscalcMN(x,y,rayleighyn,alphalevel,m,n)
 %
 %  VS : vector strength
 %  rayleigh_stat : rayleigh statistic
@@ -10,6 +10,7 @@ function [VS, rayleigh_z, rayleigh_p, rayleigh_h] = vscalc2(varargin)
 %  x,y : input signals
 %  rayleighyn : run rayleigh test? (1=yes)
 %  alphalevel : alphalevel for rayleigh test (default=0.01)
+%  m,n : calculate m:n phase locking (default=1:1)
 %  
 % The function does not call angle() so that it may avoid wrapping
 % artifacts when calculating the instantaneous phase.
@@ -17,7 +18,7 @@ function [VS, rayleigh_z, rayleigh_p, rayleigh_h] = vscalc2(varargin)
 % Joshua D Salvi, jsalvi@rockefeller.edu
 %
 
-narginchk(2, 4)
+narginchk(2, 6)
 
 x=varargin{1};
 y=varargin{2};
@@ -45,6 +46,26 @@ else
     end
 end
 
+if nargin < 5
+    m=1;n=1;
+else
+    if isempty(varargin{5})==0
+        m=varargin{5};
+    else
+        m=1;
+    end
+end
+
+if nargin < 6
+    n=1;
+else
+    if isempty(varargin{6})==0
+        n=varargin{6};
+    else
+        n=1;
+    end
+end
+
 if iscolumn(x)==0
     x=x';
 end
@@ -54,17 +75,21 @@ end
 if isempty(alphalevel)==1
     alphalevel=0.01;
 end
+
 if alphalevel > 0.2
-    disp('Alpha level too large. Restrict to a0.2.');
+    disp('Alpha level too large. Restrict to 0.2.');
 end
+
 % Calculate the analytic signal using the Hilbert transform.
 xhilb = hilbert(x);
-xhilb_eiphi = xhilb./abs(xhilb);    % normalize all lengths to 1
+xp = atan2(imag(xhilb),real(xhilb));
 yhilb = hilbert(y);
-yhilb_eiphi = yhilb./abs(yhilb);    % normalize all lengths to 1
+yp = atan2(imag(yhilb),real(yhilb));
+N = length(xhilb);
    
 % Calculate vector strength.
-VS = abs(sum((xhilb_eiphi./yhilb_eiphi))/length(xhilb));
+clear i
+VS = abs(1/N*sum(exp(i*(m*xp-n*yp))));
 
 if rayleighyn == 1
     N = length(xhilb)*10/4;
