@@ -1,13 +1,16 @@
-function [I p] = mutualinformation4(x,y,bins)
+function [I p, Hx, Hy, Imax] = mutualinformation4(x,y,bins)
 % This function calculates the mutual information for two signals using
 % a kernel density estimator.
 %
-%  I = mutualinformation2(x,y)
+%  [I, p, Hx, Hy, Imax] = mutualinformation2(x,y)
 %
 %  I : mutual information (bits)
 %  x,y : input signals
 %  bins : how many bins would you like to use? (default = 2^4)
 %  p : p-value for the mutual information value calculated here
+%  Hx,Hy : marginal entropy in x and y
+%  Imax : maximum mutual information (log2[N])
+%
 %  
 %
 % I recommend using the Freedman-Diaconis rule for calculating the
@@ -49,6 +52,11 @@ dxy=abs(dxy);
 dxy = dxy./sum(sum(dxy));
 dxylog = log2(dxy);
 dxylog(dxylog==inf | dxylog==-inf)=0;
+dx=sum(dxy,2);dx=dx./sum(dx);
+dy=sum(dxy,1);dy=dy./sum(dy);
+dxlog=log2(dx);dylog=log2(dy);
+dxlog(dxlog==inf | dxlog==-inf)=0;
+dylog(dylog==inf | dylog==-inf)=0;
 
 % Marginal probabilities
 Inh1 = log2(sum(dxy,1));
@@ -58,6 +66,9 @@ Inh2(Inh2==inf | Inh2==-inf)=0;
 
 % Mutual information from the joint and marginal probabilities
 I = sum(sum(dxy.*bsxfun(@minus,bsxfun(@minus,dxylog,Inh1),Inh2)));
+Hx = -sum(bsxfun(@times,dx,dxlog));
+Hy = -sum(bsxfun(@times,dy,dylog));
+Imax = log2(bins);
 
 % Calculate the p value
 % Mutual information is equal to the G-test statistic divided by 2N where
