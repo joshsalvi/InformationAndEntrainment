@@ -48,12 +48,12 @@ Inh3 = log2(dmnr./dmni');
 Inh1(Inh1==inf | Inh1==-inf)=0;Inh2(Inh2==inf | Inh2==-inf)=0;
 Inh3(Inh3==inf | Inh3==-inf)=0;
 
-Ir = -sum(bsxfun(@times,dmnr,Inh1));
-Ii = -sum(bsxfun(@times,dmni,Inh2));
-Ij = -sum(sum(bsxfun(@times,dmn,dmnlog)));
+Ir = -sum(bsxfun(@times,dmnr,Inh1))/log2((bins));
+Ii = -sum(bsxfun(@times,dmni,Inh2))/log2((bins));
+Ij = -sum(sum(bsxfun(@times,dmn,dmnlog)))/log2(bins);
 
 MI = abs(Ir + Ii - Ij);
-NMI = MI / min([Ii Ir]);
+
 
 
 % KL divergence between real and imaginary distributions (Dkl(R||I))
